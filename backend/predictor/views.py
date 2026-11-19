@@ -128,7 +128,7 @@ def health(request):
             "message": (
                 "Model AirSense siap digunakan."
                 if ready
-                else "Model belum tersedia. Jalankan python ml/train_model.py."
+                else "Model belum tersedia."
             ),
         })
 
@@ -150,10 +150,7 @@ def metrics(request):
     if not path.exists():
         return Response(
             {
-                "detail": (
-                    "Metrik belum tersedia. "
-                    "Jalankan training model terlebih dahulu."
-                )
+                "detail": "Metrik belum tersedia."
             },
             status=status.HTTP_404_NOT_FOUND,
         )
@@ -188,10 +185,7 @@ def predict(request):
     if bundle is None:
         return Response(
             {
-                "detail": (
-                    "Model belum tersedia. Jalankan "
-                    "`python ml/train_model.py` dari folder backend."
-                )
+                "detail": "Model belum tersedia."
             },
             status=status.HTTP_503_SERVICE_UNAVAILABLE,
         )

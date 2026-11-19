@@ -10,7 +10,12 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js'
-import { getHealth, predictAirQuality } from './services/api'
+import {
+  explainChart as requestChartExplanation,
+  getHealth,
+  getMetrics,
+  predictAirQuality,
+} from './services/api'
 
 ChartJS.register(BarElement, ArcElement, CategoryScale, LinearScale, Tooltip, Legend)
 
@@ -357,13 +362,12 @@ async function loadMetrics() {
   metricsLoading.value = true
   metricsError.value = ''
   try {
-    const response = await fetch('/api/metrics/', {
-      headers: { Accept: 'application/json' },
-    })
-    if (!response.ok) throw new Error(`Gagal mengambil metrik (HTTP ${response.status}).`)
-    metrics.value = await response.json()
+    metrics.value = await getMetrics()
   } catch (error) {
-    metricsError.value = error.message || 'Metrik model belum dapat dimuat.'
+    metricsError.value =
+      error?.response?.data?.detail ||
+      error.message ||
+      'Metrik model belum dapat dimuat.'
   } finally {
     metricsLoading.value = false
   }
@@ -384,21 +388,13 @@ async function explainChart(chartKey, predictionContext = null) {
   }
 
   try {
-    const response = await fetch('/api/ai/explain/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify(payload),
-    })
-    const data = await response.json().catch(() => ({}))
-    if (!response.ok) {
-      throw new Error(data?.detail || `Gagal meminta penjelasan AI (HTTP ${response.status}).`)
-    }
+    const data = await requestChartExplanation(payload)
     insight.text = data.explanation || 'Penjelasan AI belum tersedia.'
   } catch (error) {
-    insight.error = error.message || 'Penjelasan AI tidak dapat dimuat. Coba lagi.'
+    insight.error =
+      error?.response?.data?.detail ||
+      error.message ||
+      'Penjelasan AI tidak dapat dimuat. Coba lagi.'
   } finally {
     insight.loading = false
   }
@@ -643,7 +639,6 @@ onMounted(() => {
 
           <div v-if="!health.model_ready" class="backend-warning">
             <strong>Model belum siap.</strong> {{ health.message }}
-            <span>Pelatihan model: <code>python ml/train_model.py</code> dari folder <code>backend</code>.</span>
           </div>
 
           <form class="input-panel" @submit.prevent="submitPrediction">

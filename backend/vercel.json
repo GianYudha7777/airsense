@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh",
+  "functions": {
+    "config/wsgi.py": {
+      "maxDuration": 60,
+      "excludeFiles": "{db.sqlite3,ml/data/**,ml/train_model.py,**/__pycache__/**,**/*.pyc,.env,.env.*,!.env.example}"
+    }
+  }
+}

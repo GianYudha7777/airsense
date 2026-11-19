@@ -26,7 +26,7 @@ class AirSenseAIExplainThrottle(AnonRateThrottle):
 def _read_metrics() -> dict:
     path = settings.AIR_QUALITY_METRICS_PATH
     if not Path(path).is_file():
-        raise FileNotFoundError("Metrik model belum tersedia. Jalankan training ML terlebih dahulu.")
+        raise FileNotFoundError("Metrik model belum tersedia.")
     with Path(path).open("r", encoding="utf-8") as file:
         return json.load(file)
 
