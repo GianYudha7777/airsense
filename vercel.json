@@ -7,7 +7,7 @@
       "functions": {
         "config/wsgi.py": {
           "maxDuration": 60,
-          "excludeFiles": "{db.sqlite3,ml/data/**,ml/train_model.py,**/__pycache__/**,**/*.pyc,.env,.env.*,!.env.example}"
+          "excludeFiles": "{db.sqlite3,ml/data/**,ml/train_model.py,ml/experiments/**,**/__pycache__/**,**/*.py[cod],**/tests/**,**/test/**,**/testing/**,**/test_*.py,**/*.test.py,**/docs/**,**/doc/**,**/examples/**,**/example/**,**/*.md,**/*.rst,.env,.env.*}"
         }
       }
     },
